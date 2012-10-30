@@ -1265,3 +1265,12 @@ mapcat (fn [& x] x)
              (conj (i r) x)
             (if (nil? (first x)) [] (list x)))))))
 
+;; 173. Intro to Destructuring 2
+;;Sequential destructuring allows you to bind symbols to parts
+;; of sequential things (vectors, lists, seqs, etc.):
+;; (let [bindings* ] exprs*) Complete the bindings so all let-parts
+;; evaluate to 3.
+(= 3
+  (let [[op v] [+ (range 3)]] (apply op v))
+  (let [[[op v] b] [[+ 1] 2]] (op v b))
+  (let [[op v] [inc 2]] (op v)))
