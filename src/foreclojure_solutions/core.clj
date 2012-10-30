@@ -1247,4 +1247,21 @@ mapcat (fn [& x] x)
 ;; entries of each of the first t columns of thematrix B.
 (comment placeholder)
 
+;; 171. Intervals
+;; Write a function that takes a sequence of integers and returns a
+;; sequence of "intervals". Each interval is a a vector of two
+;; integers, start and end, such that all integers between start
+;; and end (inclusive) are contained in the input sequence.
+#(->> %
+      sort
+      ((fn i [[xf & xr :as s]]
+         (let [maxi (fn [n s]
+                      (if-let [[c & r] (seq s)]
+                        (if (>= (inc n) c) (recur c r) [n s])
+                        [n s]))        
+               [x r] (when-let [[s1 r1] (maxi xf xr)]
+                       [[xf s1] r1])]
+           (if (seq r)
+             (conj (i r) x)
+            (if (nil? (first x)) [] (list x)))))))
 
