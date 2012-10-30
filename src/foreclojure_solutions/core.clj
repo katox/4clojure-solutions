@@ -414,7 +414,12 @@ mapcat (fn [& x] x)
 ;; Write a function which generates the transitive closure of a binary
 ;; relation. The relation will be represented as a set of 2 item
 ;; vectors.
-(comment placeholder)
+(fn [e]
+  (let [kp (fn [x] (keep #(if (= (first %) x) (second %)) e))
+        pair (fn [x s] (for [y s] [x y]))
+        n (remove empty? (mapcat #(pair (first %) (kp (second %))) e))
+        ne (into e n)]
+    (if (= e ne) e (recur ne))))
 
 ;; 85. Power Set
 ;; Write a function which generates the power set of a given set. The
