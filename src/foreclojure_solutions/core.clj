@@ -1274,3 +1274,24 @@ mapcat (fn [& x] x)
   (let [[op v] [+ (range 3)]] (apply op v))
   (let [[[op v] b] [[+ 1] 2]] (op v b))
   (let [[op v] [inc 2]] (op v)))
+
+;; 177. Balancing Brackets
+;; When parsing a snippet of code it's often a good idea to do a sanity
+;; check to see if all the brackets match up. Write a function that takes
+;; in a string and returns truthy if all square [ ] round ( ) and curly { }
+;; brackets are properly paired and legally nested, or returns falsey otherwise.
+(fn [s]
+  (let [special {\) \( \] \[ \} \{}
+        is-close? #(special %)
+        is-open? #((set (vals special)) %)
+        matching? (fn[c o] (= (special o) c))
+        bm (fn[s stack]
+             (if-let [c (first s)]
+               (cond
+                 (is-open? c) (recur (rest s) (conj stack c))
+                 (is-close? c)
+                   (when (matching? (first stack) c)
+                     (recur (rest s) (rest stack)))
+                 :else (recur (rest s) stack))
+               (empty? stack)))]
+    (bm s '())))
