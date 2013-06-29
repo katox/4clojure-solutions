@@ -727,7 +727,13 @@ mapcat (fn [& x] x)
 ;; - Characters are not case-sensitive.
 ;; - Words may be placed vertically (proceeding top-down only), or
 ;; horizontally (proceeding left-right only).
-(comment placeholder)
+(defn words [word iv]
+  (let [horiz (map #(.replace % " " "") iv)
+        vert (map (partial apply str) (apply map vector (map seq horiz)))
+        words (mapcat #(clojure.string/split % #"#") (concat horiz vert))
+        pwords (filter #(>= (count %) (count word)) words)
+        patterns (map #(re-pattern (.replace % "_" ".")) pwords)]
+    (boolean (some #(re-find % word) patterns))))
 
 ;; 112. Sequs Horribilis
 ;; Create a function which takes an integer and a nested collection of
