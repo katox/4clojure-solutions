@@ -525,7 +525,19 @@ mapcat (fn [& x] x)
 ;; 4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 ;; Write a function that accepts a board, and returns a board
 ;; representing the next generation of cells.
-(comment placeholder)
+(fn [board]
+  (let [size (count board)
+        alive? (fn [x y] (= (get-in board [x y]) \#))
+        neighbours (fn [x y]
+                     (reduce #(if %2 (inc %) %) 0
+                             (for [i [-1 0 1]
+                                   j [-1 0 1]
+                                   :when (not= i j 0)]
+                               (alive? (+ x i) (+ y j)))))
+        cell (fn [x y n] (if (or (= n 3) (and (= n 2) (alive? x y))) \# \space))]
+    (for [x (range size)]
+      (apply str (for [y (range size)]
+                   (cell x y (neighbours x y)))))))
 
 ;; 95. To Tree, or not to Tree
 ;; Write a predicate which checks whether or not a given sequence
