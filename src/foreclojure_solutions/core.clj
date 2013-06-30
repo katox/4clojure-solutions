@@ -852,7 +852,19 @@ mapcat (fn [& x] x)
 ;; result in an immediate win.
 ;; Board coordinates should be as in calls to get-in. For example,
 ;; [0 1] is the topmost row, center position.
-(comment placeholder)
+(fn [piece board]
+  (let [won? (fn [[x & r]] (and (apply = x r) (not= :e x)))
+        winning? (fn [[a b c]]
+                   (let [q (into [a b c
+                                  [(first a)(second b)(last c)]
+                                  [(first c)(second b)(last a)]]
+                                 (map vector a b c))]
+                     (some won? q)))]
+    (set (for [x (range 3)
+               y (range 3)
+               :when (and (= (get-in board [x y]) :e)
+                          (winning? (assoc-in board [x y] piece)))]
+           [x y]))))
 
 ;; 120. Sum of square of digits
 ;; Write a function which takes a collection of integers as an
