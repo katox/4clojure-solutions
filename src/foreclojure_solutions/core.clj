@@ -1325,3 +1325,32 @@ mapcat (fn [& x] x)
                  :else (recur (rest s) stack))
                (empty? stack)))]
     (bm s '())))
+
+;; 178. Best Hand
+;; Following on from Recognize Playing Cards, determine the best poker hand that can be made with five cards. The hand rankings are listed below for your convenience.
+;;
+;; Straight flush: All cards in the same suit, and in sequence
+;; Four of a kind: Four of the cards have the same rank
+;; Full House: Three cards of one rank, the other two of another rank
+;; Flush: All cards in the same suit
+;; Straight: All cards in sequence (aces can be high or low, but not both at once)
+;; Three of a kind: Three of the cards have the same rank
+;; Two pair: Two pairs of cards have the same rank
+;; Pair: Two cards have the same rank
+;; High card: None of the above conditions are met
+(fn [cards]
+  (let [ranks (sort (map #((zipmap "23456789TJQKA" (range 13)) (second %)) cards))
+        np (fn [n o] (= o (count (filter #(= n %) (vals (frequencies ranks))))))
+        straight (or (= ranks (range (first ranks) (+ (first ranks) 5)))
+                     (= ranks [0 1 2 3 12]))
+        flush (apply = (map first cards))]
+    (cond
+     (and straight flush) :straight-flush
+     (np 4 1) :four-of-a-kind
+     (and (np 3 1) (np 2 1)) :full-house
+     flush :flush
+     straight :straight
+     (np 3 1) :three-of-a-kind
+     (np 2 2) :two-pair
+     (np 2 1) :pair
+     :else :high-card)))
