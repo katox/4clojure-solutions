@@ -1327,7 +1327,9 @@ mapcat (fn [& x] x)
     (bm s '())))
 
 ;; 178. Best Hand
-;; Following on from Recognize Playing Cards, determine the best poker hand that can be made with five cards. The hand rankings are listed below for your convenience.
+;; Following on from Recognize Playing Cards, determine the best poker hand
+;; that can be made with five cards. The hand rankings are listed below for
+;; your convenience.
 ;;
 ;; Straight flush: All cards in the same suit, and in sequence
 ;; Four of a kind: Four of the cards have the same rank
