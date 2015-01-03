@@ -489,7 +489,20 @@ mapcat (fn [& x] x)
 ;; - You can start at any node.
 ;; - You must visit each edge exactly once.
 ;; - All edges are undirected.
-(comment placeholder)
+(fn [edges]
+  (let [v (zipmap (distinct (flatten edges)) (repeat 0))
+        degrees (vals (reduce
+                        (fn [r [a b]]
+                          (if (not= a b)
+                            (-> r
+                              (update-in [a] inc)
+                              (update-in [b] inc))
+                            r))
+                        v edges))
+        odd (count (filter odd? degrees))]
+    (and
+      (or (= odd 2) (= odd 0))
+      (every? pos? degrees))))
 
 ;; 90. Cartesian Product
 ;; Write a function which calculates the Cartesian product of two sets.
