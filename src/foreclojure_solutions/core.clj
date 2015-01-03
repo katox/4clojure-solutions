@@ -406,7 +406,26 @@ mapcat (fn [& x] x)
 ;; Write a function which takes a sequence of words, and returns true
 ;; if they can be arranged into one continous word chain, and false if
 ;; they cannot.
-(comment placeholder)
+(fn [s]
+  (letfn [(permutations [r s]
+            (if (seq s)
+              (mapcat #(permutations (conj r %) (disj s %)) (seq s))
+              [r]))
+          (chainable? [x y]
+            (let [diffs (fn [x y] (<= (reduce + (map #(if (= %1 %2) 0 1) x y)) 1))
+                  drop-char (fn [n s] (str (subs s 0 n) (subs s (inc n) (count s))))
+                  drop-variants (fn [s] (map #(drop-char % s) (range (count s))))
+                  deletions (fn [l s] (some #(= s %) (drop-variants l)))
+                  cx (count x)
+                  cy (count y)]
+              (cond
+                (= cx cy) (diffs x y)
+                (= cx (inc cy)) (deletions x y)
+                (= (inc cx) cy) (deletions y x))))
+          (chain? [s]
+            (reduce #(when (chainable? %1 %2) %2) s))]
+    (boolean
+      (some chain? (permutations [] s)))))
 
 ;; 83. A Half-Truth
 ;; Write a function which takes a variable number of booleans. Your
