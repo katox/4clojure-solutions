@@ -375,7 +375,12 @@ mapcat (fn [& x] x)
 ;; vectors. The path should start at the top of the triangle and move
 ;; to an adjacent number on the next row until the bottom of the
 ;; triangle is reached.
-(comment placeholder)
+(fn [t]
+  (let [min-step (fn [s] (map (partial apply min) (partition 2 1 s)))]
+    (first
+      (reduce
+        #(map + (min-step %1) %2)
+        (reverse t)))))
 
 ;; 80. Perfect Numbers
 ;; A number is "perfect" if the sum of its divisors equal the number
