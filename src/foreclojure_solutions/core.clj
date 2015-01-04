@@ -45,7 +45,7 @@ reduce + 0
 
 ;; 25. Find the odd numbers
 ;; Write a function which returns only the odd numbers from a sequence.
-filter #(> (mod % 2) 0)
+filter odd?
 
 ;; 26. Fibonacci Sequence
 ;; Write a function which returns the first X fibonacci numbers.
