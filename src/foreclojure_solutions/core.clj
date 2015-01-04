@@ -52,7 +52,7 @@ filter #(> (mod % 2) 0)
 (fn [x]
   (take x
     ((fn fib [a b]
-        (cons a (lazy-seq (fib b (+ a b))))) 
+        (cons a (lazy-seq (fib b (+ a b)))))
      1 1)))
 
 ;; 27. Palindrome Detector
@@ -62,12 +62,12 @@ filter #(> (mod % 2) 0)
 
 ;; 28. Flatten a Sequence
 ;; Write a function which flattens a sequence.
-(fn flt[coll] 
-          (let [l (first coll) r (next coll)] 
-               (concat 
+(fn flt[coll]
+          (let [l (first coll) r (next coll)]
+               (concat
                 (if (sequential? l)
                     (flt l)
-                    [l]) 
+                    [l])
                 (when (sequential? r)
                   (flt r)))))
 
@@ -164,7 +164,7 @@ mapcat (fn [& x] x)
 ;; same length, use the one that occurs first. An increasing
 ;; sub-sequence must have a length of 2 or greater to qualify.
 (fn sub[s]
-  (let [subb (fn [s curs maxs] 
+  (let [subb (fn [s curs maxs]
              (let [x (first s)
                     r (rest s)
                     ncurs (if (= ((fnil dec 0) x) (peek curs)) (conj curs x) [x])
@@ -194,7 +194,7 @@ mapcat (fn [& x] x)
 #(let [dst (fn [sq rs st]
               (let [x (first sq)
                     r (rest sq)
-                    nrs (if (get st x) rs (conj rs x))] 
+                    nrs (if (get st x) rs (conj rs x))]
                    (if (seq r)
                      (recur r nrs (conj st x))
                      nrs)))]
@@ -204,7 +204,7 @@ mapcat (fn [& x] x)
 ;; Write a function which allows you to create function compositions.
 ;; The parameter list should take a variable number of functions, and
 ;; create a function applies them from right-to-left.
-(fn [& funcs] 
+(fn [& funcs]
   (fn [& args] (first (reduce #(list (apply %2 %)) args (reverse funcs)))))
 
 ;; 59. Juxtaposition
@@ -221,7 +221,7 @@ mapcat (fn [& x] x)
 ;; lazy.
 (fn myreductions
   ([f coll] (myreductions f (first coll) (rest coll)))
-  ([f val coll] 
+  ([f val coll]
      (cons val
            (lazy-seq
              (when-let [s (seq coll)]
@@ -293,9 +293,9 @@ mapcat (fn [& x] x)
 ;; one map, the mapping(s) from the latter (left-to-right) should be
 ;; combined with the mapping in the result by calling (f val-in-result
 ;; val-in-latter)
-(fn [f & maps] 
+(fn [f & maps]
   (reduce #(conj %
-    (reduce (fn [r [k v]] 
+    (reduce (fn [r [k v]]
               (let [rv (get r k)] (assoc r k (if rv (f rv v) v)))) % %2))
           maps))
 
@@ -313,7 +313,7 @@ mapcat (fn [& x] x)
 ;; analyzes a tic-tac-toe board and returns :x if X has won, :o if O
 ;; has won, and nil if neitherplayer has won.
 (fn [[a b c]]
-  (let [q (into [a b c 
+  (let [q (into [a b c
                  [(first a)(second b)(last c)]
                  [(first c)(second b)(last a)]] (map vector a b c))
         won? (fn [[x & r]] (when (and (apply = x r) (not= :e x)) x))]
@@ -323,7 +323,7 @@ mapcat (fn [& x] x)
 ;; Given a string of comma separated integers, write a function which
 ;; returns a new comma separated string that only contains the numbers
 ;; which are perfect squares.
-(fn [s] 
+(fn [s]
   (letfn [(i[s] (map #(Integer/parseInt %) (re-seq #"\d+" s)))]
     (apply str (interpose \,
                           (keep #(let [sq (Math/sqrt %)]
@@ -362,7 +362,7 @@ mapcat (fn [& x] x)
 
 ;; 78. Reimplement Trampoline
 ;; Reimplement the function described in "Intro to Trampoline".
-(fn t 
+(fn t
   ([f] (let [r (f)]
             (if (fn? r)
               (recur r)
@@ -454,7 +454,7 @@ mapcat (fn [& x] x)
                (cond (zero? n) (assoc c 0 #{})
                      (= n 1) (assoc c 1 (set (map hash-set s)))
                      :else (assoc c n
-                                  (reduce into #{} 
+                                  (reduce into #{}
                                           (for [i s]
                                             (map #(conj % i) (c (dec n))))))))]
     (reduce into (set [#{} s]) (vals (reduce #(p % %2 s) {} (range (count s)))))))
@@ -499,10 +499,20 @@ mapcat (fn [& x] x)
                               (update-in [b] inc))
                             r))
                         v edges))
-        odd (count (filter odd? degrees))]
+        odd (count (filter odd? degrees))
+        connected? (fn [edges]
+                     (let [find (fn [union k] (or (some #(if (contains? % k) %) union) #{k}))]
+                       (= 1 (count
+                              (reduce (fn [r [a b]]
+                                        (let [ua (find r a)
+                                              ub (find r b)]
+                                          (-> r
+                                            (disj ua ub)
+                                            (conj (clojure.set/union ua ub)))))
+                                #{} edges)))))]
     (and
       (or (= odd 2) (= odd 0))
-      (every? pos? degrees))))
+      (connected? edges))))
 
 ;; 90. Cartesian Product
 ;; Write a function which calculates the Cartesian product of two sets.
@@ -516,7 +526,16 @@ mapcat (fn [& x] x)
 ;; -You will be given a set of tuples representing the edges of a
 ;;  graph. Each member of a tuple being a vertex/node in the graph.
 ;; -Each edge is undirected (can be traversed either direction). 
-(comment placeholder)
+(fn [edges]
+  (let [find (fn [union k] (or (some #(if (contains? % k) %) union) #{k}))]
+    (= 1 (count
+           (reduce (fn [r [a b]]
+                     (let [ua (find r a)
+                           ub (find r b)]
+                       (-> r
+                         (disj ua ub)
+                         (conj (clojure.set/union ua ub)))))
+             #{} edges)))))
 
 ;; 92. Read Roman numerals
 ;; Roman numerals are easy to recognize, but not everyone knows all
@@ -528,7 +547,7 @@ mapcat (fn [& x] x)
 ;; representable with ordinary letters.
 (fn [s]
   (let [rom {\I 1, \V 5, \X 10, \L 50, \C 100, \D 500, \M 1000}]
-       (apply + (remove nil? (reduce (fn [[r l] x] 
+       (apply + (remove nil? (reduce (fn [[r l] x]
                           (let [n (rom x)]
                                (cond (nil? l) [r n]
                                      (> n l) [(+ r (- n l)) nil]
@@ -543,7 +562,7 @@ mapcat (fn [& x] x)
 (fn exp [acc s]
   (if (some coll? s)
     (exp (exp acc (first s)) (rest s))
-    (if (seq s) 
+    (if (seq s)
       (conj acc s)
       acc))) []
 
@@ -594,9 +613,9 @@ mapcat (fn [& x] x)
 ;; predicate to determine whether or not a given binary tree is
 ;; symmetric. (see To Tree, or not to Tree for a reminder on the tree
 ;; representation we're using).
-(fn sym? 
+(fn sym?
   ([t] (sym? (second t) (last t)))
-  ([a b] (or 
+  ([a b] (or
           (and (nil? a) (nil? b))
           (if (and (coll? a) (coll? b))
             (and (= (count a) (count b) 3)
@@ -616,8 +635,8 @@ mapcat (fn [& x] x)
 (fn pascal[n]
   (cond (= n 1) [1]
         (= n 2) [1 1]
-        :else (conj (first 
-                     (reduce (fn[[r l] x] [(conj r (+ l x)) x]) [[] 0] (pascal(dec n)))) 
+        :else (conj (first
+                     (reduce (fn[[r l] x] [(conj r (+ l x)) x]) [[] 0] (pascal(dec n))))
                     1)))
 
 ;; 98. Equivalence Classes
@@ -663,7 +682,7 @@ mapcat (fn [& x] x)
 ;; :keys-like-this until it's time to convert. Write a function which
 ;; takes lower-case hyphen-separated strings and converts them to
 ;; camel-case strings.
-(fn [s] 
+(fn [s]
   (let [parts (re-seq #"\w+" s)]
     (apply str (first parts) (map clojure.string/capitalize (rest parts)))))
 
@@ -677,13 +696,13 @@ mapcat (fn [& x] x)
                (cond (zero? n) (assoc c 0 #{})
                      (= n 1) (assoc c 1 (set (map hash-set s)))
                      :else (assoc c n
-                                  (reduce into #{} 
+                                  (reduce into #{}
                                           (for [i s]
                                             (map #(conj % i) (c (dec n))))))))]
        (cond
         (< (count s) n) #{}
         (= (count s) n) (hash-set (set s))
-        :else (set (filter #(= (count %) n) 
+        :else (set (filter #(= (count %) n)
                            ((reduce #(p % %2 s) {} (range (count s))) n s))))))
 
 ;; 104. Write Roman Numerals
@@ -692,7 +711,7 @@ mapcat (fn [& x] x)
 ;; in uppercase, adhering to the subtractive principle.
 (fn wnum [n]
   (let [r (sorted-map-by > 1000 "M" 900 "CM" 500 "D" 400 "CD" 100 "C"
-                      90 "XC" 50 "L" 40 "XL" 10 "X" 9 "IX" 5 "V" 4 "IV" 1 "I")       
+                      90 "XC" 50 "L" 40 "XL" 10 "X" 9 "IX" 5 "V" 4 "IV" 1 "I")
         m (some #(when (>= (- n %) 0) %) (keys r))]
   (when-not (nil? m)
     (str (r m) (wnum (- n m))))))
@@ -703,8 +722,8 @@ mapcat (fn [& x] x)
 ;; of all the numbers (if any) between it and the next keyword in the
 ;; sequence.
 (fn conv [s]
-  (reduce (fn [r [k v]] 
-          (assoc (into r (zipmap k (repeat []))) (last k) v)) {}  
+  (reduce (fn [r [k v]]
+          (assoc (into r (zipmap k (repeat []))) (last k) v)) {}
           (partition 2 (partition-by keyword? s))))
 
 ;; 106. Number Maze
@@ -753,8 +772,8 @@ mapcat (fn [& x] x)
 ;; return an infinite lazy sequence of pronunciations, each element
 ;; being a pronunciation of the previous element.
 (fn [s]
-  (drop 1 (iterate (fn [s] 
-                     (mapcat (juxt count first) 
+  (drop 1 (iterate (fn [s]
+                     (mapcat (juxt count first)
                              (partition-by identity s))) s)))
 
 ;; 111. Crossword puzzle
@@ -794,11 +813,11 @@ mapcat (fn [& x] x)
    (let [upto (fn upto [n s]
                 (lazy-seq
                  (when-let [[x & r] (seq s)]
-                   (when (>= (- n x) 0) 
+                   (when (>= (- n x) 0)
                      (cons x (upto (- n x) r))))))
          nums (upto n (flatten root))
          walk (fn walk [s]
-              (lazy-seq 
+              (lazy-seq
                (when-let [[x & r] (seq s)]
                  (cons (if (sequential? x)
                          (remove #(or (nil? %) (= '() %))(walk x))
@@ -826,7 +845,7 @@ mapcat (fn [& x] x)
   (lazy-seq
    (when-let [[c & r] (seq s)]
      (let [m (if (f c) (dec n) n)]
-          (when (pos? m) 
+          (when (pos? m)
             (cons c (mytake m f r)))))))
 
 ;; 115. The Balance of N
@@ -846,7 +865,7 @@ mapcat (fn [& x] x)
 ;; true iff it is a balanced prime.
 (fn sand [n]
   (letfn [(prime? [n p] (every? #(pos? (rem n %)) p))
-          (next-prime 
+          (next-prime
              ([n p] (if (prime? n p) (conj p n) (recur (+ n 2) p)))
              ([p] (next-prime (+ (peek p) 2) p)))
           (gen-primes [p] (cons (last p) (lazy-seq (gen-primes (next-prime p)))))]
@@ -875,9 +894,9 @@ mapcat (fn [& x] x)
 ;; Map is one of the core elements of a functional programming
 ;; language. Given a function f and an input sequence s, return a lazy
 ;; sequence of (f x) for each element x in s.
-(fn mp [f s] 
-  (lazy-seq 
-   (when (seq s) 
+(fn mp [f s]
+  (lazy-seq
+   (when (seq s)
      (cons (f (first s)) (mp f (rest s))))))
 
 ;; 119. Win at Tic-Tac-Toe
@@ -1046,8 +1065,8 @@ mapcat (fn [& x] x)
     (lazy-seq
      (let [a (seq s1) b (seq s2)]
           (if (and a b)
-            (cons (first a) 
-                  (if (p (first a) (first b)) 
+            (cons (first a)
+                  (if (p (first a) (first b))
                     (cons v (ins p v (rest a) (rest b)))
                     (ins p v (rest a) (rest b))))
             a)))) p v s (rest s)))
@@ -1077,7 +1096,7 @@ mapcat (fn [& x] x)
 ;; in base 2 and [15]in base 16. 
 (fn [x b]
   (let [n (if (zero? x) 0 (int (/ (Math/log x) (Math/log b))))]
-       (first (reduce (fn [[v r] i] 
+       (first (reduce (fn [[v r] i]
             (let [bi (apply * (repeat i b))]
                  [(conj v (quot r bi)) (rem r bi)]))
                       [[] x] (range n -1 -1)))))
@@ -1175,7 +1194,7 @@ mapcat (fn [& x] x)
 ;; returns an infinite lazy sequence of vectors, where each next one
 ;; is constructed from the previous following the rules used in
 ;; Pascal's Triangle. For example, for [3 1 2], the next row is [3 4 3 2].
-(fn [row]  
+(fn [row]
   (let [f (fn [row] (conj (first (reduce (fn[[r l] x] [(conj r (+ l x)) x]) [[] 0N] row))
                           (last row)))]
     (iterate f row)))
@@ -1247,7 +1266,7 @@ mapcat (fn [& x] x)
 ;; Write a function that accepts a curried function of unknown arity
 ;; n. Return an equivalent function of n arguments. 
 (fn [f]
-  (partial 
+  (partial
    (fn [f & args]
      (let [g (f (first args))]
           (if (fn? g)
@@ -1325,7 +1344,7 @@ mapcat (fn [& x] x)
          (let [maxi (fn [n s]
                       (if-let [[c & r] (seq s)]
                         (if (>= (inc n) c) (recur c r) [n s])
-                        [n s]))        
+                        [n s]))
                [x r] (when-let [[s1 r1] (maxi xf xr)]
                        [[xf s1] r1])]
            (if (seq r)
