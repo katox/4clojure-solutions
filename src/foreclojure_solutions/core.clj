@@ -84,7 +84,7 @@ filter odd?
 ;; 31. Pack a Sequence
 ;; Write a function which packs consecutive duplicates into
 ;; sub-lists.
-(fn pack-seq [s] (partition-by identity (vec s)))
+partition-by identity
 
 ;; 32. Duplicate a Sequence
 ;; Write a function which duplicates each element of a sequence.
