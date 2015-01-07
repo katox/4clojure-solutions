@@ -79,7 +79,7 @@ filter odd?
 ;; 30. Compress a Sequence
 ;; Write a function which removes consecutive duplicates from a
 ;; sequence.
-reduce (fn [acc i] (if (and (not (empty? acc)) (= (nth acc (dec (count acc))) i)) acc(concat acc [i]))) []
+(fn [coll] (map first (partition-by identity coll)))
 
 ;; 31. Pack a Sequence
 ;; Write a function which packs consecutive duplicates into
