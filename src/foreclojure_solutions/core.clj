@@ -674,7 +674,27 @@ mapcat (fn [& x] x)
 ;; - replace a single item with another item
 ;; WARNING: Some of the test cases may timeout if you write an
 ;; inefficient solution!
-(comment placeholder)
+(fn [s t]
+  (let [cs (count s)
+        ct (count t)
+        row (fn [r v0 cost]
+              (if-let [nv0 (next v0)]
+                (recur
+                  (conj r (min (inc (last r)) (inc (first nv0)) (+ (first v0) (first cost))))
+                  (rest v0)
+                  (rest cost))
+                r))
+        lev* (fn [v0 i]
+               (if (= cs i)
+                 (last v0)
+                 (recur
+                   (row [(inc i)] v0 (map #(if (= (nth s i) %) 0 1) t))
+                   (inc i))))]
+    (cond
+      (= s t) 0
+      (zero? cs) ct
+      (zero? ct) cs
+      :else (lev* (range (inc ct)) 0))))
 
 ;; 102. intoCamelCase
 ;; When working with java, you often need to create an object with
