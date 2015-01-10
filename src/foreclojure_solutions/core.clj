@@ -755,7 +755,15 @@ mapcat (fn [& x] x)
 ;; Find the shortest path through the "maze". Because there are
 ;; multiple shortest paths, you must return the length of the shortest
 ;; path, not the path itself.
-(comment placeholder)
+(fn [x y]
+  ((fn [q y]
+     (let [p (peek q)
+           vars (fn [x] (filter integer? [(* x 2) (/ x 2) (+ x 2)]))
+           nps (map #(conj p %) (vars (last p)))]
+       (if (= y (last p))
+         (count p)
+         (recur (apply conj (pop q) (sort-by count nps)) y))))
+    (conj clojure.lang.PersistentQueue/EMPTY [x]) y))
 
 ;; 107. Simple closures
 ;; Lexical scope and first-class functions are two of the most basic
