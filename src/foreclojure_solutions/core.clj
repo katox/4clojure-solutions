@@ -860,7 +860,10 @@ mapcat (fn [& x] x)
 ;; largest. If the output is coerced into a sequence, it should return
 ;; a seq of unique input elements in the same order as they were
 ;; entered.
-(comment placeholder)
+(fn [& r]
+  (reify clojure.lang.Seqable
+    (toString [_] (apply str (interpose ", " (sort r))))
+    (seq [_] (seq (distinct r)))))
 
 ;; 114. Global take-while
 ;; take-while is great for filtering sequences, but it limited: you
