@@ -1378,7 +1378,12 @@ mapcat (fn [& x] x)
 ;; matrix that consists of the first t entries of each of the first s
 ;; rows of the matrix B or, equivalently, that consists of the first s
 ;; entries of each of the first t columns of thematrix B.
-(comment placeholder)
+(fn matrix
+  ([f] (matrix f 0 0))
+  ([f m n] (letfn [(row [i j f] (lazy-seq (cons (f j i) (row (inc i) j f))))
+                   (col [i j f] (lazy-seq (cons (row i j f) (col i (inc j) f))))]
+             (col n m f)))
+  ([f m n s t] (take s (map #(take t %) (matrix f m n)))))
 
 ;; 171. Intervals
 ;; Write a function that takes a sequence of integers and returns a
