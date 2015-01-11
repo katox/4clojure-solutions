@@ -919,7 +919,23 @@ mapcat (fn [& x] x)
 ;; - The mouse is not allowed to travel diagonally in the maze (only
 ;; up/down/left/right), nor can he escape the edge of the maze. Your
 ;; function must return true iff the maze is solvable by themouse.
-(comment placeholder)
+(fn [maze]
+  (let [transpose (fn [coll] (apply mapcat (comp list str) coll))
+        reachable? (fn [s] (re-find #"(C@|@C)" s))
+        walk (fn [s]
+               (reduce (fn [s [x y]] (str (subs s 0 x) (apply str (repeat (- y x) \@)) (subs s y (count s)))) s
+                 (let [matcher (re-matcher #"[ ]*[M@]+[ ]*" s)]
+                   (loop [r [] match (re-find matcher)]
+                     (if match
+                       (recur (conj r [(.start matcher) (.end matcher)]) (re-find matcher))
+                       r)))))
+        search (fn [m]
+                 (let [n (->> (map walk m) transpose (map walk) transpose)]
+                   (if (= m n)
+                     m
+                     (recur n))))
+        m (search maze)]
+    (boolean (or (some reachable? m) (some reachable? (transpose m))))))
 
 ;; 118. Re-implement Map
 ;; Map is one of the core elements of a functional programming
