@@ -1268,7 +1268,31 @@ mapcat (fn [& x] x)
 ;; and returns an increasing lazy sequence of all palindromic numbers
 ;; that are not less than n.
 ;; The most simple solution will exceed the time limit
-(comment placeholder)
+(fn [n]
+  (let [to-digits (fn [n] (map #(- (int %) (int \0)) (str n)))
+        to-number (fn [s] (read-string (apply str s)))
+        lt (fn [a b] (when-let [s (seq (drop-while zero? (map compare a b)))]
+                       (neg? (first s))))
+        gen (fn [first-part cn]
+              (if (odd? cn)
+                (concat first-part (drop 1 (reverse first-part)))
+                (concat first-part (reverse first-part))))
+        incp (fn [prefix cn]
+               (let [nrough (to-digits (inc (to-number prefix)))]
+                 (if (= (count nrough) (count prefix))
+                   (gen nrough cn)
+                   (concat 1 (repeat (dec cn) 0) 1))))
+        next-pal (fn [n]
+                   (let [s (to-digits n)
+                         cn (count s)
+                         prefix (first (split-at (+ (quot cn 2) (mod cn 2)) s))]
+                     (to-number
+                       (loop [np (gen prefix cn)]
+                         (if (lt np s)
+                           (recur (incp prefix cn))
+                           np)))))]
+    (iterate #(next-pal (inc %))
+      (next-pal n))))
 
 ;; 152. Latin Square Slicing
 ;; Our aim is to implement a function which accepts a vector of
