@@ -1489,3 +1489,29 @@ mapcat (fn [& x] x)
       (np 2 1) :pair
       :else :high-card)))
 
+;; 195. Parentheses... Again
+;; In a family of languages like Lisp, having balanced parentheses is a defining
+;; feature of the language. Luckily, Lisp has almost no syntax, except for these
+;; "delimiters" -- and that hardly qualifies as "syntax", at least in any useful
+;; computer programming sense.
+
+;; It is not a difficult exercise to find all the combinations of well-formed
+;; parentheses if we only have N pairs to work with. For instance, if we only
+;; have 2 pairs, we only have two possible combinations: "()()" and "(())".
+;; Any other combination of length 4 is ill-formed. Can you see why?
+
+;; Generate all possible combinations of well-formed parentheses of
+;; length 2n (n pairs of parentheses). For this problem, we only consider '('and ') ',
+;; but the answer is similar if you work with only {} or only [] .
+;; There is an interesting pattern in the numbers!
+(fn [n]
+  (letfn [(parens [acc open close]
+                   (if (= 0 open close)
+                     (list (apply str acc))
+                     (concat
+                       (when (> open 0)
+                         (parens (conj acc \() (dec open) (inc close)))
+                       (when (> close 0)
+                         (parens (conj acc \)) open (dec close)))
+                       )))]
+    (set (parens [] n 0))))
