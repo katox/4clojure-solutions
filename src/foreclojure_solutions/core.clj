@@ -20,7 +20,7 @@ format "Hello, %s!"
 
 ;; 19. Last Element
 ;; Write a function which returns the last element in a sequence.
-(fn[coll] (nth coll (dec (count coll))))
+(fn [coll] (nth coll (dec (count coll))))
 
 ;; 20. Penultimate Element
 ;; Write a function which returns the second to last element from
@@ -33,7 +33,7 @@ format "Hello, %s!"
 
 ;; 22. Count a Sequence
 ;; Write a function which returns the total number of elements in a sequence.
-#(reduce (fn[x y] (inc x)) 0 %)
+#(reduce (fn [x y] (inc x)) 0 %)
 
 ;; 23. Reverse a Sequence
 ;; Write a function which reverses a sequence.
@@ -51,9 +51,9 @@ filter odd?
 ;; Write a function which returns the first X fibonacci numbers.
 (fn [x]
   (take x
-    ((fn fib [a b]
-        (cons a (lazy-seq (fib b (+ a b)))))
-     1 1)))
+        ((fn fib [a b]
+           (cons a (lazy-seq (fib b (+ a b)))))
+          1 1)))
 
 ;; 27. Palindrome Detector
 ;; Write a function which returns true if the given sequence is a palindrome.
@@ -62,14 +62,14 @@ filter odd?
 
 ;; 28. Flatten a Sequence
 ;; Write a function which flattens a sequence.
-(fn flt[coll]
-          (let [l (first coll) r (next coll)]
-               (concat
-                (if (sequential? l)
-                    (flt l)
-                    [l])
-                (when (sequential? r)
-                  (flt r)))))
+(fn flt [coll]
+  (let [l (first coll) r (next coll)]
+    (concat
+      (if (sequential? l)
+        (flt l)
+        [l])
+      (when (sequential? r)
+        (flt r)))))
 
 ;; 29. Get the Caps
 ;; Write a function which takes a string and returns a new string
@@ -128,12 +128,12 @@ mapcat (fn [& x] x)
 ;; Write a function which reverses the interleave process into x
 ;; number of subsequences.
 (fn [s num] (let [ivec (map-indexed #(vector (mod % num) %2) s)]
-                            (vals (sort (reduce
-                                    (fn [ret x]
-                                      (let [k (first x), v (last x)]
-                                        (assoc ret k (conj (get ret k []) v))))
-                                    {}
-                                    ivec)))))
+              (vals (sort (reduce
+                            (fn [ret x]
+                              (let [k (first x), v (last x)]
+                                (assoc ret k (conj (get ret k []) v))))
+                            {}
+                            ivec)))))
 
 ;; 44. Rotate Sequence
 ;; Write a function which can rotate a sequence in either direction.
@@ -163,15 +163,15 @@ mapcat (fn [& x] x)
 ;; sub-sequence of increasing numbers. If two sub-sequences have the
 ;; same length, use the one that occurs first. An increasing
 ;; sub-sequence must have a length of 2 or greater to qualify.
-(fn sub[s]
+(fn sub [s]
   (let [subb (fn [s curs maxs]
-             (let [x (first s)
-                    r (rest s)
-                    ncurs (if (= ((fnil dec 0) x) (peek curs)) (conj curs x) [x])
-                    nmax (max-key count ncurs maxs)]
+               (let [x (first s)
+                     r (rest s)
+                     ncurs (if (= ((fnil dec 0) x) (peek curs)) (conj curs x) [x])
+                     nmax (max-key count ncurs maxs)]
                  (if (seq r)
-                    (recur r ncurs nmax)
-                     nmax)))
+                   (recur r ncurs nmax)
+                   nmax)))
         longest (subb s [(first s)] [])]
     (if (> (count longest) 1) longest [])))
 
@@ -192,13 +192,13 @@ mapcat (fn [& x] x)
 ;; Write a function which removes the duplicates from a sequence.
 ;; Order of the items must be maintained.
 #(let [dst (fn [sq rs st]
-              (let [x (first sq)
-                    r (rest sq)
-                    nrs (if (get st x) rs (conj rs x))]
-                   (if (seq r)
-                     (recur r nrs (conj st x))
-                     nrs)))]
-   (dst % [] #{}))
+             (let [x (first sq)
+                   r (rest sq)
+                   nrs (if (get st x) rs (conj rs x))]
+               (if (seq r)
+                 (recur r nrs (conj st x))
+                 nrs)))]
+  (dst % [] #{}))
 
 ;; 58. Function Composition
 ;; Write a function which allows you to create function compositions.
@@ -222,10 +222,10 @@ mapcat (fn [& x] x)
 (fn myreductions
   ([f coll] (myreductions f (first coll) (rest coll)))
   ([f val coll]
-     (cons val
-           (lazy-seq
-             (when-let [s (seq coll)]
-               (myreductions f (f val (first s)) (rest s)))))))
+   (cons val
+         (lazy-seq
+           (when-let [s (seq coll)]
+             (myreductions f (f val (first s)) (rest s)))))))
 
 ;; 61. Map Construction
 ;; Write a function which takes a vector of keys and a vector of
@@ -245,7 +245,7 @@ mapcat (fn [& x] x)
 ;; in the order they appear in s.
 (fn g [f s]
   (reduce (fn [r v] (let [add #((fnil conj []) % %2)]
-                     (update-in r [(f v)] add v))) {} s))
+                      (update-in r [(f v)] add v))) {} s))
 
 ;; 65. Black Box Testing
 ;; Clojure has many sequence types, which act in subtly different
@@ -259,7 +259,7 @@ mapcat (fn [& x] x)
 ;; given. You won't be allowed to inspect their class or use the
 ;; built-in predicates like list? - the point is to poke at them and
 ;; understand their behavior.
-(fn[x]
+(fn [x]
   (let [t (conj (empty x) [:a :b] [:c :d])]
     (cond
       (:a t) :map
@@ -270,8 +270,8 @@ mapcat (fn [& x] x)
 ;; 66. Greatest Common Divisor
 ;; Given two integers, write a function which returns the greatest
 ;; common divisor.
-(fn[a b]
-  (let [dv (fn[x] (set (filter #(zero? (rem x %)) (range 1 (inc x)) )))]
+(fn [a b]
+  (let [dv (fn [x] (set (filter #(zero? (rem x %)) (range 1 (inc x)))))]
     (apply max (clojure.set/intersection (dv a) (dv b)))))
 
 ;; 67. Prime Numbers
@@ -279,11 +279,11 @@ mapcat (fn [& x] x)
 (fn [x]
   (let [prime? (fn [n pvec] (every? #(pos? (rem n %)) pvec))
         gen-primes (fn [x n pvec]
-          (if (pos? x)
-            (if (prime? n pvec)
-              (recur (dec x) (+ n 2) (conj pvec n))
-              (recur x (+ n 2) pvec))
-            pvec))]
+                     (if (pos? x)
+                       (if (prime? n pvec)
+                         (recur (dec x) (+ n 2) (conj pvec n))
+                         (recur x (+ n 2) pvec))
+                       pvec))]
     (gen-primes (dec x) 3 [2])))
 
 ;; 69. Merge with a Function
@@ -295,8 +295,8 @@ mapcat (fn [& x] x)
 ;; val-in-latter)
 (fn [f & maps]
   (reduce #(conj %
-    (reduce (fn [r [k v]]
-              (let [rv (get r k)] (assoc r k (if rv (f rv v) v)))) % %2))
+                 (reduce (fn [r [k v]]
+                           (let [rv (get r k)] (assoc r k (if rv (f rv v) v)))) % %2))
           maps))
 
 ;; 70. Word Sorting
@@ -314,8 +314,8 @@ mapcat (fn [& x] x)
 ;; has won, and nil if neitherplayer has won.
 (fn [[a b c]]
   (let [q (into [a b c
-                 [(first a)(second b)(last c)]
-                 [(first c)(second b)(last a)]] (map vector a b c))
+                 [(first a) (second b) (last c)]
+                 [(first c) (second b) (last a)]] (map vector a b c))
         won? (fn [[x & r]] (when (and (apply = x r) (not= :e x)) x))]
     (first (remove nil? (map won? q)))))
 
@@ -324,10 +324,10 @@ mapcat (fn [& x] x)
 ;; returns a new comma separated string that only contains the numbers
 ;; which are perfect squares.
 (fn [s]
-  (letfn [(i[s] (map #(Integer/parseInt %) (re-seq #"\d+" s)))]
+  (letfn [(i [s] (map #(Integer/parseInt %) (re-seq #"\d+" s)))]
     (apply str (interpose \,
                           (keep #(let [sq (Math/sqrt %)]
-                                      (when (== (* sq sq) %) %))
+                                  (when (== (* sq sq) %) %))
                                 (i s))))))
 
 ;; 75. Euler's Totient Function
@@ -338,14 +338,14 @@ mapcat (fn [& x] x)
 ;; function.
 (fn [x]
   (let [gcd (fn [a b]
-             (cond
-              (= b 0) a
-              (= a 0) b
-              (> a b) (recur b (mod a b))
-              :else (recur a (mod b a))))
+              (cond
+                (= b 0) a
+                (= a 0) b
+                (> a b) (recur b (mod a b))
+                :else (recur a (mod b a))))
         coprime? #(= (gcd % x) 1)]
-       (if (= 1 x) 1
-           (count (filter coprime? (range 1 x))))))
+    (if (= 1 x) 1
+                (count (filter coprime? (range 1 x))))))
 
 ;; 77. Anagram Finder
 ;; Write a function which finds all the anagrams in a vector of words.
@@ -364,9 +364,9 @@ mapcat (fn [& x] x)
 ;; Reimplement the function described in "Intro to Trampoline".
 (fn t
   ([f] (let [r (f)]
-            (if (fn? r)
-              (recur r)
-              r)))
+         (if (fn? r)
+           (recur r)
+           r)))
   ([f & a] (t #(apply f a))))
 
 ;; 79. Triangle Minimal Path
@@ -387,7 +387,7 @@ mapcat (fn [& x] x)
 ;; itself. 6 is a perfect number because 1+2+3=6. Write a function
 ;; which returns true for perfect numbers and false otherwise.
 (fn [n]
-  (let [dv (fn[x] (filter #(zero? (rem x %)) (range 1 x) ))]
+  (let [dv (fn [x] (filter #(zero? (rem x %)) (range 1 x)))]
     (= n (reduce + (dv n)))))
 
 ;; 81. Set Intersection
@@ -408,22 +408,22 @@ mapcat (fn [& x] x)
 ;; they cannot.
 (fn [s]
   (letfn [(permutations [r s]
-            (if (seq s)
-              (mapcat #(permutations (conj r %) (disj s %)) (seq s))
-              [r]))
+                        (if (seq s)
+                          (mapcat #(permutations (conj r %) (disj s %)) (seq s))
+                          [r]))
           (chainable? [x y]
-            (let [diffs (fn [x y] (<= (reduce + (map #(if (= %1 %2) 0 1) x y)) 1))
-                  drop-char (fn [n s] (str (subs s 0 n) (subs s (inc n) (count s))))
-                  drop-variants (fn [s] (map #(drop-char % s) (range (count s))))
-                  deletions (fn [l s] (some #(= s %) (drop-variants l)))
-                  cx (count x)
-                  cy (count y)]
-              (cond
-                (= cx cy) (diffs x y)
-                (= cx (inc cy)) (deletions x y)
-                (= (inc cx) cy) (deletions y x))))
+                      (let [diffs (fn [x y] (<= (reduce + (map #(if (= %1 %2) 0 1) x y)) 1))
+                            drop-char (fn [n s] (str (subs s 0 n) (subs s (inc n) (count s))))
+                            drop-variants (fn [s] (map #(drop-char % s) (range (count s))))
+                            deletions (fn [l s] (some #(= s %) (drop-variants l)))
+                            cx (count x)
+                            cy (count y)]
+                        (cond
+                          (= cx cy) (diffs x y)
+                          (= cx (inc cy)) (deletions x y)
+                          (= (inc cx) cy) (deletions y x))))
           (chain? [s]
-            (reduce #(when (chainable? %1 %2) %2) s))]
+                  (reduce #(when (chainable? %1 %2) %2) s))]
     (boolean
       (some chain? (permutations [] s)))))
 
@@ -451,12 +451,12 @@ mapcat (fn [& x] x)
 ;; empty set and x itself.
 (fn [s]
   (let [p (fn [c n s]
-               (cond (zero? n) (assoc c 0 #{})
-                     (= n 1) (assoc c 1 (set (map hash-set s)))
-                     :else (assoc c n
-                                  (reduce into #{}
-                                          (for [i s]
-                                            (map #(conj % i) (c (dec n))))))))]
+            (cond (zero? n) (assoc c 0 #{})
+                  (= n 1) (assoc c 1 (set (map hash-set s)))
+                  :else (assoc c n
+                                 (reduce into #{}
+                                         (for [i s]
+                                           (map #(conj % i) (c (dec n))))))))]
     (reduce into (set [#{} s]) (vals (reduce #(p % %2 s) {} (range (count s)))))))
 
 ;; 86. Happy numbers
@@ -469,10 +469,10 @@ mapcat (fn [& x] x)
 ;; happy or not.
 (fn [n]
   (= 1 ((fn [s n]
-     (let [i (fn [n] (reduce #(+ % (* %2 %2)) 0 (map #(- (int %) (int \0)) (str n))))]
-          (if (contains? s n)
-            n
-            (recur (conj s n) (i n))))) #{} n)))
+          (let [i (fn [n] (reduce #(+ % (* %2 %2)) 0 (map #(- (int %) (int \0)) (str n))))]
+            (if (contains? s n)
+              n
+              (recur (conj s n) (i n))))) #{} n)))
 
 ;; 88. Symmetric Difference
 ;; Write a function which returns the symmetric difference of two
@@ -495,8 +495,8 @@ mapcat (fn [& x] x)
                         (fn [r [a b]]
                           (if (not= a b)
                             (-> r
-                              (update-in [a] inc)
-                              (update-in [b] inc))
+                                (update-in [a] inc)
+                                (update-in [b] inc))
                             r))
                         v edges))
         odd (count (filter odd? degrees))
@@ -507,9 +507,9 @@ mapcat (fn [& x] x)
                                         (let [ua (find r a)
                                               ub (find r b)]
                                           (-> r
-                                            (disj ua ub)
-                                            (conj (clojure.set/union ua ub)))))
-                                #{} edges)))))]
+                                              (disj ua ub)
+                                              (conj (clojure.set/union ua ub)))))
+                                      #{} edges)))))]
     (and
       (or (= odd 2) (= odd 0))
       (connected? edges))))
@@ -533,9 +533,9 @@ mapcat (fn [& x] x)
                      (let [ua (find r a)
                            ub (find r b)]
                        (-> r
-                         (disj ua ub)
-                         (conj (clojure.set/union ua ub)))))
-             #{} edges)))))
+                           (disj ua ub)
+                           (conj (clojure.set/union ua ub)))))
+                   #{} edges)))))
 
 ;; 92. Read Roman numerals
 ;; Roman numerals are easy to recognize, but not everyone knows all
@@ -547,12 +547,12 @@ mapcat (fn [& x] x)
 ;; representable with ordinary letters.
 (fn [s]
   (let [rom {\I 1, \V 5, \X 10, \L 50, \C 100, \D 500, \M 1000}]
-       (apply + (remove nil? (reduce (fn [[r l] x]
-                          (let [n (rom x)]
-                               (cond (nil? l) [r n]
-                                     (> n l) [(+ r (- n l)) nil]
-                                     :else [(+ r l) n])))
-                                     [0 nil] s)))))
+    (apply + (remove nil? (reduce (fn [[r l] x]
+                                    (let [n (rom x)]
+                                      (cond (nil? l) [r n]
+                                            (> n l) [(+ r (- n l)) nil]
+                                            :else [(+ r l) n])))
+                                  [0 nil] s)))))
 
 ;; 93. Partially Flatten a Sequence
 ;; Write a function which flattens any nested combination of
@@ -600,12 +600,12 @@ mapcat (fn [& x] x)
 ;; represents a binary tree. Each node in the tree must have a value,
 ;; a left child, and a rightchild.
 (fn tree? [t]
-    (cond (nil? t) true
-          (coll? t) (and (= (count t) 3)
-                         ((complement coll?) (first t))
-                         (tree? (second t))
-                         (tree? (last t)))
-          :else false))
+  (cond (nil? t) true
+        (coll? t) (and (= (count t) 3)
+                       ((complement coll?) (first t))
+                       (tree? (second t))
+                       (tree? (last t)))
+        :else false))
 
 ;; 96. Beauty is Symmetry
 ;; Let us define a binary tree as "symmetric" if the left half of the
@@ -616,13 +616,13 @@ mapcat (fn [& x] x)
 (fn sym?
   ([t] (sym? (second t) (last t)))
   ([a b] (or
-          (and (nil? a) (nil? b))
-          (if (and (coll? a) (coll? b))
-            (and (= (count a) (count b) 3)
-                 (= (first a) (first b))
-                 (sym? (second a) (last b))
-                 (sym? (last a) (second b)))
-            false))))
+           (and (nil? a) (nil? b))
+           (if (and (coll? a) (coll? b))
+             (and (= (count a) (count b) 3)
+                  (= (first a) (first b))
+                  (sym? (second a) (last b))
+                  (sym? (last a) (second b)))
+             false))))
 
 ;; 97. Pascal's Triangle
 ;; Pascal's triangle is a triangle of numbers computed using the
@@ -632,11 +632,11 @@ mapcat (fn [& x] x)
 ;; numbers in the row above, and adding a 1 to the beginning and end
 ;; of the row.
 ;; Write a function which returns the nth row of Pascal's Triangle.
-(fn pascal[n]
+(fn pascal [n]
   (cond (= n 1) [1]
         (= n 2) [1 1]
         :else (conj (first
-                     (reduce (fn[[r l] x] [(conj r (+ l x)) x]) [[] 0] (pascal(dec n))))
+                      (reduce (fn [[r l] x] [(conj r (+ l x)) x]) [[] 0] (pascal (dec n))))
                     1)))
 
 ;; 98. Equivalence Classes
@@ -658,11 +658,11 @@ mapcat (fn [& x] x)
 ;; ratios.
 (fn [& nums]
   (let [gcd (fn [a b]
-             (cond
-              (= b 0) a
-              (= a 0) b
-              (> a b) (recur b (mod a b))
-              :else (recur a (mod b a))))]
+              (cond
+                (= b 0) a
+                (= a 0) b
+                (> a b) (recur b (mod a b))
+                :else (recur a (mod b a))))]
     (reduce (fn [a b] (* (/ a (gcd a b)) b)) nums)))
 
 ;; 101. Levenshtein Distance
@@ -713,17 +713,17 @@ mapcat (fn [& x] x)
 ;; a sequence is equal to the binomial coefficient.
 (fn [n s]
   (let [p (fn [c n s]
-               (cond (zero? n) (assoc c 0 #{})
-                     (= n 1) (assoc c 1 (set (map hash-set s)))
-                     :else (assoc c n
-                                  (reduce into #{}
-                                          (for [i s]
-                                            (map #(conj % i) (c (dec n))))))))]
-       (cond
-        (< (count s) n) #{}
-        (= (count s) n) (hash-set (set s))
-        :else (set (filter #(= (count %) n)
-                           ((reduce #(p % %2 s) {} (range (count s))) n s))))))
+            (cond (zero? n) (assoc c 0 #{})
+                  (= n 1) (assoc c 1 (set (map hash-set s)))
+                  :else (assoc c n
+                                 (reduce into #{}
+                                         (for [i s]
+                                           (map #(conj % i) (c (dec n))))))))]
+    (cond
+      (< (count s) n) #{}
+      (= (count s) n) (hash-set (set s))
+      :else (set (filter #(= (count %) n)
+                         ((reduce #(p % %2 s) {} (range (count s))) n s))))))
 
 ;; 104. Write Roman Numerals
 ;; This is the inverse of Problem 92, but much easier. Given an
@@ -731,10 +731,10 @@ mapcat (fn [& x] x)
 ;; in uppercase, adhering to the subtractive principle.
 (fn wnum [n]
   (let [r (sorted-map-by > 1000 "M" 900 "CM" 500 "D" 400 "CD" 100 "C"
-                      90 "XC" 50 "L" 40 "XL" 10 "X" 9 "IX" 5 "V" 4 "IV" 1 "I")
+                         90 "XC" 50 "L" 40 "XL" 10 "X" 9 "IX" 5 "V" 4 "IV" 1 "I")
         m (some #(when (>= (- n %) 0) %) (keys r))]
-  (when-not (nil? m)
-    (str (r m) (wnum (- n m))))))
+    (when-not (nil? m)
+      (str (r m) (wnum (- n m))))))
 
 ;; 105. Identify keys and values
 ;; Given an input sequence of keywords and numbers, create a map such
@@ -743,7 +743,7 @@ mapcat (fn [& x] x)
 ;; sequence.
 (fn conv [s]
   (reduce (fn [r [k v]]
-          (assoc (into r (zipmap k (repeat []))) (last k) v)) {}
+            (assoc (into r (zipmap k (repeat []))) (last k) v)) {}
           (partition 2 (partition-by keyword? s))))
 
 ;; 106. Number Maze
@@ -785,10 +785,10 @@ mapcat (fn [& x] x)
 ;; The sequences may be infinite, so be careful to search lazily.
 (fn [& s]
   ((fn [c]
-      (let [f (map first c) m (apply min f)]
-           (if (apply = f)
-             (ffirst c)
-             (recur (map #(if (= m (first %)) (rest %) %) c))))) s))
+     (let [f (map first c) m (apply min f)]
+       (if (apply = f)
+         (ffirst c)
+         (recur (map #(if (= m (first %)) (rest %) %) c))))) s))
 
 ;; 110. Sequence of pronunciations
 ;; Write a function that returns a lazy sequence of "pronunciations"
@@ -838,20 +838,20 @@ mapcat (fn [& x] x)
 ;; which includes all elements starting from the head whose sum is
 ;; less than or equal to the input integer.
 (fn [n root]
-   (let [upto (fn upto [n s]
-                (lazy-seq
+  (let [upto (fn upto [n s]
+               (lazy-seq
                  (when-let [[x & r] (seq s)]
                    (when (>= (- n x) 0)
                      (cons x (upto (- n x) r))))))
-         nums (upto n (flatten root))
-         walk (fn walk [s]
-              (lazy-seq
-               (when-let [[x & r] (seq s)]
-                 (cons (if (sequential? x)
-                         (remove #(or (nil? %) (= '() %))(walk x))
-                         (when (some #(= x %) nums) x))
-                       (walk r)))))]
-     (take-while #(not (nil? %)) (walk root))))
+        nums (upto n (flatten root))
+        walk (fn walk [s]
+               (lazy-seq
+                 (when-let [[x & r] (seq s)]
+                   (cons (if (sequential? x)
+                           (remove #(or (nil? %) (= '() %)) (walk x))
+                           (when (some #(= x %) nums) x))
+                         (walk r)))))]
+    (take-while #(not (nil? %)) (walk root))))
 
 ;; 113. Making Data Dance
 ;; Write a function that takes a variable number of integer arguments.
@@ -874,10 +874,10 @@ mapcat (fn [& x] x)
 ;; to, but not including, the nth item that satisfies the predicate.
 (fn mytake [n f s]
   (lazy-seq
-   (when-let [[c & r] (seq s)]
-     (let [m (if (f c) (dec n) n)]
-          (when (pos? m)
-            (cons c (mytake m f r)))))))
+    (when-let [[c & r] (seq s)]
+      (let [m (if (f c) (dec n) n)]
+        (when (pos? m)
+          (cons c (mytake m f r)))))))
 
 ;; 115. The Balance of N
 ;; A balanced number is one whose component digits have the same sum
@@ -897,13 +897,13 @@ mapcat (fn [& x] x)
 (fn sand [n]
   (letfn [(prime? [n p] (every? #(pos? (rem n %)) p))
           (next-prime
-             ([n p] (if (prime? n p) (conj p n) (recur (+ n 2) p)))
-             ([p] (next-prime (+ (peek p) 2) p)))
+            ([n p] (if (prime? n p) (conj p n) (recur (+ n 2) p)))
+            ([p] (next-prime (+ (peek p) 2) p)))
           (gen-primes [p] (cons (last p) (lazy-seq (gen-primes (next-prime p)))))]
     (and (> n 3)
-      (let [p (into [2] (take-while #(<= % n) (gen-primes [2 3])))
-            [r s] (subvec p (- (count p) 2))]
-        (and (= s n) (= s (/ (+ r (peek (next-prime p))) 2)))))))
+         (let [p (into [2] (take-while #(<= % n) (gen-primes [2 3])))
+               [r s] (subvec p (- (count p) 2))]
+           (and (= s n) (= s (/ (+ r (peek (next-prime p))) 2)))))))
 
 ;; 117. For Science!
 ;; A mad scientist with tenure has created an experiment tracking mice
@@ -924,11 +924,11 @@ mapcat (fn [& x] x)
         reachable? (fn [s] (re-find #"(C@|@C)" s))
         walk (fn [s]
                (reduce (fn [s [x y]] (str (subs s 0 x) (apply str (repeat (- y x) \@)) (subs s y (count s)))) s
-                 (let [matcher (re-matcher #"[ ]*[M@]+[ ]*" s)]
-                   (loop [r [] match (re-find matcher)]
-                     (if match
-                       (recur (conj r [(.start matcher) (.end matcher)]) (re-find matcher))
-                       r)))))
+                       (let [matcher (re-matcher #"[ ]*[M@]+[ ]*" s)]
+                         (loop [r [] match (re-find matcher)]
+                           (if match
+                             (recur (conj r [(.start matcher) (.end matcher)]) (re-find matcher))
+                             r)))))
         search (fn [m]
                  (let [n (->> (map walk m) transpose (map walk) transpose)]
                    (if (= m n)
@@ -943,8 +943,8 @@ mapcat (fn [& x] x)
 ;; sequence of (f x) for each element x in s.
 (fn mp [f s]
   (lazy-seq
-   (when (seq s)
-     (cons (f (first s)) (mp f (rest s))))))
+    (when (seq s)
+      (cons (f (first s)) (mp f (rest s))))))
 
 ;; 119. Win at Tic-Tac-Toe
 ;; As in Problem 73, a tic-tac-toe board is represented by a two
@@ -959,8 +959,8 @@ mapcat (fn [& x] x)
   (let [won? (fn [[x & r]] (and (apply = x r) (not= :e x)))
         winning? (fn [[a b c]]
                    (let [q (into [a b c
-                                  [(first a)(second b)(last c)]
-                                  [(first c)(second b)(last a)]]
+                                  [(first a) (second b) (last c)]
+                                  [(first c) (second b) (last a)]]
                                  (map vector a b c))]
                      (some won? q)))]
     (set (for [x (range 3)
@@ -975,8 +975,8 @@ mapcat (fn [& x] x)
 ;; the sum of their squared component digits. For example: 10 is
 ;; larger than 1 squared plus 0 squared; whereas 15 is smaller than 1
 ;; squared plus 5 squared.
-(fn check[col]
-  (letfn [(sq[n] (reduce + (map #(let [x (- (int %) (int \0))] (* x x)) (str n))))]
+(fn check [col]
+  (letfn [(sq [n] (reduce + (map #(let [x (- (int %) (int \0))] (* x x)) (str n))))]
     (count (filter #(< % (sq %)) col))))
 
 ;; 121. Universal Computation Engine
@@ -989,9 +989,9 @@ mapcat (fn [& x] x)
 (fn [form]
   (fn [bmap]
     (let [calc (fn calc
-                    ([x] (if (sequential? x) (apply calc x) x))
-                    ([op & x] (let [ops {'* *, '/ /, '+ +, '- -}]
-                                   (apply (ops op) (map calc x)))))
+                 ([x] (if (sequential? x) (apply calc x) x))
+                 ([op & x] (let [ops {'* *, '/ /, '+ +, '- -}]
+                             (apply (ops op) (map calc x)))))
           formula (clojure.walk/prewalk-replace bmap form)]
       (calc formula))))
 
@@ -1073,7 +1073,7 @@ mapcat (fn [& x] x)
 (fn [card] (let [ranks (zipmap "23456789TJQKA" (range 13))
                  suits {\S :spade, \H :heart, \D :diamond, \C :club}
                  [s r] (seq card)]
-            {:suit (suits s), :rank (ranks r)}))
+             {:suit (suits s), :rank (ranks r)}))
 
 ;; 130. Tree reparenting
 ;; Every node of a tree is connected to each of its children as well
@@ -1099,7 +1099,7 @@ mapcat (fn [& x] x)
 ;; an equivalent summation.
 (fn [& s]
   (let [p (fn [s]
-              (disj (reduce (fn [s a] (clojure.set/union s (map #(conj % a) s))) #{#{}} s) #{}))
+            (disj (reduce (fn [s a] (clojure.set/union s (map #(conj % a) s))) #{#{}} s) #{}))
         r (fn [s] (set (map #(apply + %) (p s))))]
     (not (empty? (apply clojure.set/intersection (map r s))))))
 
@@ -1109,14 +1109,14 @@ mapcat (fn [& x] x)
 ;; inserted between every two items that satisfy the predicate.
 (fn [p v s]
   ((fn ins [p v s1 s2]
-    (lazy-seq
-     (let [a (seq s1) b (seq s2)]
-          (if (and a b)
-            (cons (first a)
-                  (if (p (first a) (first b))
-                    (cons v (ins p v (rest a) (rest b)))
-                    (ins p v (rest a) (rest b))))
-            a)))) p v s (rest s)))
+     (lazy-seq
+       (let [a (seq s1) b (seq s2)]
+         (if (and a b)
+           (cons (first a)
+                 (if (p (first a) (first b))
+                   (cons v (ins p v (rest a) (rest b)))
+                   (ins p v (rest a) (rest b))))
+           a)))) p v s (rest s)))
 
 ;; 134. A nil key
 ;; Write a function which, given a key and map, returns true iff the
@@ -1143,10 +1143,10 @@ mapcat (fn [& x] x)
 ;; in base 2 and [15]in base 16. 
 (fn [x b]
   (let [n (if (zero? x) 0 (int (/ (Math/log x) (Math/log b))))]
-       (first (reduce (fn [[v r] i]
-            (let [bi (apply * (repeat i b))]
-                 [(conj v (quot r bi)) (rem r bi)]))
-                      [[] x] (range n -1 -1)))))
+    (first (reduce (fn [[v r] i]
+                     (let [bi (apply * (repeat i b))]
+                       [(conj v (quot r bi)) (rem r bi)]))
+                   [[] x] (range n -1 -1)))))
 
 ;; 138. Squares Squared
 ;; Create a function of two integer arguments: the start and end,
@@ -1194,10 +1194,10 @@ mapcat (fn [& x] x)
 (fn [trump]
   (fn [c]
     (let [lead (:suit (first c))
-          cmp (fn [{s1 :suit r1 :rank}{s2 :suit r2 :rank}]
-                  (let [sorder (assoc {lead 1} trump 2)
-                        sc (compare (sorder s1 0) (sorder s2 0))]
-                       (if (zero? sc) (compare r1 r2) sc)))]
+          cmp (fn [{s1 :suit r1 :rank} {s2 :suit r2 :rank}]
+                (let [sorder (assoc {lead 1} trump 2)
+                      sc (compare (sorder s1 0) (sorder s2 0))]
+                  (if (zero? sc) (compare r1 r2) sc)))]
       (last (sort cmp c)))))
 
 ;; 143. dot product
@@ -1212,9 +1212,9 @@ mapcat (fn [& x] x)
 ;; from the first function after it hits the end.
 (fn [i & fs]
   ((fn os [i cf fs]
-    (let [f (first cf)
-          rf (rest cf)]
-      (cons i (lazy-seq (os (f i) (if (seq rf) rf fs) fs))))) i fs fs))
+     (let [f (first cf)
+           rf (rest cf)]
+       (cons i (lazy-seq (os (f i) (if (seq rf) rf fs) fs))))) i fs fs))
 
 ;; 146. Trees into tables
 ;; Because Clojure's for macro allows you to "walk" over multiple
@@ -1242,7 +1242,7 @@ mapcat (fn [& x] x)
 ;; is constructed from the previous following the rules used in
 ;; Pascal's Triangle. For example, for [3 1 2], the next row is [3 4 3 2].
 (fn [row]
-  (let [f (fn [row] (conj (first (reduce (fn[[r l] x] [(conj r (+ l x)) x]) [[] 0N] row))
+  (let [f (fn [row] (conj (first (reduce (fn [[r l] x] [(conj r (+ l x)) x]) [[] 0N] row))
                           (last row)))]
     (iterate f row)))
 
@@ -1292,7 +1292,7 @@ mapcat (fn [& x] x)
                            (recur (incp prefix cn))
                            np)))))]
     (iterate #(next-pal (inc %))
-      (next-pal n))))
+             (next-pal n))))
 
 ;; 152. Latin Square Slicing
 ;; Our aim is to implement a function which accepts a vector of
@@ -1316,7 +1316,7 @@ mapcat (fn [& x] x)
   (empty? (for [x s, y s
                 :let [i (clojure.set/intersection x y)]
                 :while (not= x y)
-          	:when (not-empty i)]
+                :when (not-empty i)]
             i)))
 
 ;; 156. Map Defaults
@@ -1338,12 +1338,12 @@ mapcat (fn [& x] x)
 ;; n. Return an equivalent function of n arguments. 
 (fn [f]
   (partial
-   (fn [f & args]
-     (let [g (f (first args))]
-          (if (fn? g)
-            (recur g (rest args))
-            g)))
-   f))
+    (fn [f & args]
+      (let [g (f (first args))]
+        (if (fn? g)
+          (recur g (rest args))
+          g)))
+    f))
 
 ;; 164. Language of a DFA
 ;; A deterministic finite automaton (DFA) is an abstract machine that
@@ -1377,8 +1377,8 @@ mapcat (fn [& x] x)
 ;; - x > y → :gt
 ;; - x < y → :lt
 #(cond (% %2 %3) :lt
-        (% %3 %2) :gt
-        :else :eq)
+       (% %3 %2) :gt
+       :else :eq)
 
 ;; 168. Infinite Matrix
 ;; In what follows, m, n, s, t denote nonnegative integers, f denotes
@@ -1425,7 +1425,7 @@ mapcat (fn [& x] x)
                        [[xf s1] r1])]
            (if (seq r)
              (conj (i r) x)
-            (if (nil? (first x)) [] (list x)))))))
+             (if (nil? (first x)) [] (list x)))))))
 
 ;; 173. Intro to Destructuring 2
 ;;Sequential destructuring allows you to bind symbols to parts
@@ -1433,9 +1433,9 @@ mapcat (fn [& x] x)
 ;; (let [bindings* ] exprs*) Complete the bindings so all let-parts
 ;; evaluate to 3.
 (= 3
-  (let [[op v] [+ (range 3)]] (apply op v))
-  (let [[[op v] b] [[+ 1] 2]] (op v b))
-  (let [[op v] [inc 2]] (op v)))
+   (let [[op v] [+ (range 3)]] (apply op v))
+   (let [[[op v] b] [[+ 1] 2]] (op v b))
+   (let [[op v] [inc 2]] (op v)))
 
 ;; 177. Balancing Brackets
 ;; When parsing a snippet of code it's often a good idea to do a sanity
@@ -1446,14 +1446,14 @@ mapcat (fn [& x] x)
   (let [special {\) \( \] \[ \} \{}
         is-close? #(special %)
         is-open? #((set (vals special)) %)
-        matching? (fn[c o] (= (special o) c))
-        bm (fn[s stack]
+        matching? (fn [c o] (= (special o) c))
+        bm (fn [s stack]
              (if-let [c (first s)]
                (cond
                  (is-open? c) (recur (rest s) (conj stack c))
                  (is-close? c)
-                   (when (matching? (first stack) c)
-                     (recur (rest s) (rest stack)))
+                 (when (matching? (first stack) c)
+                   (recur (rest s) (rest stack)))
                  :else (recur (rest s) stack))
                (empty? stack)))]
     (bm s '())))
@@ -1479,12 +1479,13 @@ mapcat (fn [& x] x)
                      (= ranks [0 1 2 3 12]))
         flush (apply = (map first cards))]
     (cond
-     (and straight flush) :straight-flush
-     (np 4 1) :four-of-a-kind
-     (and (np 3 1) (np 2 1)) :full-house
-     flush :flush
-     straight :straight
-     (np 3 1) :three-of-a-kind
-     (np 2 2) :two-pair
-     (np 2 1) :pair
-     :else :high-card)))
+      (and straight flush) :straight-flush
+      (np 4 1) :four-of-a-kind
+      (and (np 3 1) (np 2 1)) :full-house
+      flush :flush
+      straight :straight
+      (np 3 1) :three-of-a-kind
+      (np 2 2) :two-pair
+      (np 2 1) :pair
+      :else :high-card)))
+
