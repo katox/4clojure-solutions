@@ -1015,7 +1015,7 @@ mapcat (fn [& x] x)
 ;; 125. Gus' Quinundrum
 ;; Create a function of no arguments which returns a string that is an
 ;; exact copy of the function itself. 
-(comment placeholder)
+(fn [] (let [q (char 34) s "(fn [] (let [q (char 34) s (str (subs s 0 27) q s q (char 93) (subs s 26))))"] (str (subs s 0 27) q s q (char 93) (subs s 26))))
 
 ;; 127. Love Triangle
 ;; Everyone loves triangles, and it's easy to understand why—they're
